@@ -32,8 +32,9 @@ void ShowProperties(HWND parent, DocController* ctrl, bool extended);
 
 constexpr const WCHAR* kPropertiesWinClassName = L"SUMATRA_PDF_PROPERTIES";
 
-#define kLeftRightPaddingDx 8
-#define kRectPadding 8
+// TODO: Scale DPI
+#define kLeftRightPaddingDx 16
+#define kRectPadding 20
 #define kTxtPaddingDy 2
 
 LRESULT CALLBACK WndProcProperties(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
@@ -600,11 +601,11 @@ static void DrawProperties(HWND hwnd, HDC hdc) {
 
     Rect rcClient = ClientRect(hwnd);
     RECT rTmp = ToRECT(rcClient);
-    auto col = GetAppColor(AppColor::MainWindowBg);
+    auto col = GetAppColor(AppColor::DocumentBg); // TODO: Tweak
     ScopedGdiObj<HBRUSH> brushAboutBg(CreateSolidBrush(col));
     FillRect(hdc, &rTmp, brushAboutBg);
 
-    col = GetAppColor(AppColor::MainWindowText);
+    col = GetAppColor(AppColor::NotificationsHighlightText); // TODO: Tweak
     SetTextColor(hdc, col);
 
     /* render text on the left*/
@@ -614,6 +615,9 @@ static void DrawProperties(HWND hwnd, HDC hdc) {
         rTmp = ToRECT(el->leftPos);
         HdcDrawText(hdc, txt, -1, &rTmp, DT_RIGHT | DT_NOPREFIX);
     }
+
+
+    SetTextColor(hdc, GetAppColor(AppColor::MainWindowText)); // TODO: Tweak
 
     /* render text on the right */
     SelectObject(hdc, fontRightTxt);
